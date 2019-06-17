@@ -28,6 +28,7 @@ class Player:
         blocks: (int)
         end_year: (int)
     """
+
     def __init__(self, player_dict, year, start_date=None, end_date=None):
         """
         Args:
@@ -55,9 +56,35 @@ class Player:
         for player_dict in player_dicts:
             players.append(Player(player_dict, end_year))
         return players
-
+"""
+    def get_team(end_year, date_range)
+"""
     def per(self):
         return self.easy_per()
+
+    def get_totals(self):
+        if self.start_date and self.end_date:
+            league_totals = utils.season_league_totals(2018)
+            team_totals = utils.season_team_totals(2018, self.team)
+            opponent_totals = utils.season_opponent_totals(2018, self.team) #FIXME
+        else:
+            team_totals = utils.season_team_totals(2018, self.team)
+            opponent_totals = utils.season_opponent_totals(2018, self.team)
+            league_totals = utils.season_league_totals(2018)
+        return team_totals, opponent_totals, league_totals
+
+    def team_poss(self):
+        team_totals, opponent_totals, _ = get_totals(self)
+        tm_FGA = team_totals["attempted_field_goals"]
+        tm_FTA = team_totals["attempted_free_throws"]
+        tm_ORB = team_totals["offensive_rebounds"]
+        opp_DRB = opponent_totals["defensive_rebounds"]
+        tm_TOV = team_totals["turnovers"]
+        opp_FGA = opponent_totals["attempted_field_goals"]
+        opp_FTA = opponent_totals["attempted_free_throws"]
+        0.5 * ((tm_FGA + 0.4 * tm_FTA - 1.07 * (tm_ORB / (tm_ORB + opp_DRB)) \
+            * (tm_FGA - tm_FG) + tm_TOV) + (opp_FGA + 0.4 * opp_FTA - 1.07 \
+            * (Opp ORB / (Opp ORB + Tm DRB)) * (Opp FGA - Opp FG) + Opp TOV))
 
     def easy_per(self):
         team = utils.season_team_totals(self.end_year, self.team)
@@ -95,5 +122,6 @@ class Player:
 if  __name__ == "__main__":
     players = Player.get_players(2018)
     for p in players:
-        print(p.name, p.easy_per())
+        if p.easy_per() > 1 and p.minutes_played > 410:
+            print(p.name, p.easy_per())
 
